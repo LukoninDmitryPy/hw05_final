@@ -41,9 +41,8 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=author)
     count_posts = post_list.count()
-    user_profile = get_object_or_404(User, username=username)
     user = request.user
-    following = user.is_authenticated and user_profile.following.exists()
+    following = user.is_authenticated and author.following.exists()
     context = {
         'author': author,
         'count_posts': count_posts,
