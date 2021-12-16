@@ -58,7 +58,7 @@ class Post(AbstractModel):
         return self.text[:15]
 
 
-class Comment(models.Model):
+class Comment(AbstractModel):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
