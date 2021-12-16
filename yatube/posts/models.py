@@ -14,7 +14,7 @@ class AbstractModel(models.Model):
 
     class Meta:
         # Это абстрактная модель:
-        abstract = True 
+        abstract = True
 
 
 class Group(models.Model):
@@ -49,7 +49,7 @@ class Post(AbstractModel):
         'Картинка',
         upload_to='posts/',
         blank=True
-    )  
+    )
 
     class Meta:
         ordering = ('-created',)

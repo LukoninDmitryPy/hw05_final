@@ -31,7 +31,6 @@ class StaticURLTests(TestCase):
         self.authorized_client.force_login(self.user)
         cache.clear()
 
-
     def test_non_existent_page(self):
         response = self.guest_client.get('/unexisting_page/')
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

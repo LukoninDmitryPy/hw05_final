@@ -22,13 +22,13 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.small_gif = (            
-             b'\x47\x49\x46\x38\x39\x61\x02\x00'
-             b'\x01\x00\x80\x00\x00\x00\x00\x00'
-             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-             b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-             b'\x0A\x00\x3B'
+        cls.small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
         )
         cls.uploaded = SimpleUploadedFile(
             name='small.gif',
@@ -67,18 +67,25 @@ class PostCreateFormTests(TestCase):
         cache.clear()
 
     def test_auth_follow_and_unfollow(self):
-        
-        self.authorized_client.post(reverse('posts:profile_follow', kwargs ={'username': self.follower}))
+
+        self.authorized_client.post(reverse(
+            'posts:profile_follow', kwargs={'username': self.follower}
+        ))
         self.assertIs(
-            Follow.objects.filter(user=self.user, author=self.follower).exists(),
+            Follow.objects.filter(
+                user=self.user, author=self.follower
+            ).exists(),
             True
         )
-        self.authorized_client.post(reverse('posts:profile_unfollow', kwargs ={'username': self.follower}))
+        self.authorized_client.post(reverse(
+            'posts:profile_unfollow', kwargs={'username': self.follower}
+        ))
         self.assertIs(
-            Follow.objects.filter(user=self.user, author=self.follower).exists(),
+            Follow.objects.filter(
+                user=self.user, author=self.follower
+            ).exists(),
             False
         )
-
 
     def test_new_post_in_favourites(self):
         Follow.objects.create(user=self.user, author=self.follower)

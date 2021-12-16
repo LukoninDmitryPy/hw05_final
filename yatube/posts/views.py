@@ -20,10 +20,12 @@ def get_page_context(queryset, request):
         'page_obj': page_obj,
     }
 
+
 @cache_page(20 * 1)
 def index(request):
     context = get_page_context(Post.objects.all(), request)
     return render(request, 'posts/index.html', context)
+
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
@@ -33,6 +35,7 @@ def group_posts(request, slug):
     }
     context.update(get_page_context(post_list, request))
     return render(request, 'posts/group_list.html', context)
+
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
@@ -49,6 +52,7 @@ def profile(request, username):
     context.update(get_page_context(post_list, request))
     return render(request, 'posts/profile.html', context)
 
+
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm()
@@ -63,7 +67,7 @@ def post_detail(request, post_id):
     context = {
         'post_id': post_id,
         'posts_count': posts_count,
-        'form':form,
+        'form': form,
         'comments': comments,
         'following': following,
     }
@@ -103,7 +107,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
-    # Получите пост 
+    # Получите пост
     form = CommentForm(request.POST or None)
     post = get_object_or_404(Post, pk=post_id)
     if form.is_valid():
@@ -113,6 +117,7 @@ def add_comment(request, post_id):
         comment.save()
     return redirect('posts:post_detail', post_id=post_id)
 
+
 @login_required
 def follow_index(request):
     post_list = Post.objects.filter(
@@ -120,6 +125,7 @@ def follow_index(request):
     )
     context = get_page_context(post_list, request)
     return render(request, 'posts/follow.html', context)
+
 
 @login_required
 def profile_follow(request, username):

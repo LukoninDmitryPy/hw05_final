@@ -22,13 +22,13 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.small_gif = (            
-             b'\x47\x49\x46\x38\x39\x61\x02\x00'
-             b'\x01\x00\x80\x00\x00\x00\x00\x00'
-             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-             b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-             b'\x0A\x00\x3B'
+        cls.small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
         )
         cls.uploaded = SimpleUploadedFile(
             name='small.gif',
@@ -90,7 +90,9 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(self.post.text, form_data['text'])
         self.assertEqual(self.user.username, form_data['author'])
         self.assertEqual(self.group.id, form_data['group'])
-        self.assertEqual(self.post.image.name, f"posts/{form_data['image'].name}")
+        self.assertEqual(
+            self.post.image.name, f"posts/{form_data['image'].name}"
+        )
         self.assertTrue(
             Post.objects.filter(
                 text=form_data['text'],
@@ -146,7 +148,7 @@ class PostCreateFormTests(TestCase):
                 group=form_data['group'],
             ).exists()
         )
-    
+
     def test_create_comment_by_authorized_client(self):
         comments_count = Comment.objects.count()
         form_data = {
