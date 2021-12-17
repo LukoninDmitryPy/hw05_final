@@ -16,7 +16,7 @@ User = get_user_model()
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
-class PostCreateFormTests(TestCase):
+class PostCasheFormTests(TestCase):
 
     @classmethod
     def setUpClass(cls):
