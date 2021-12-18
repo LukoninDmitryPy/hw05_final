@@ -16,7 +16,7 @@ User = get_user_model()
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
-class PostCasheFormTests(TestCase):
+class CasheFormTests(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -46,12 +46,6 @@ class PostCasheFormTests(TestCase):
             author=cls.user,
             group=cls.group,
         )
-        cls.comments = Comment.objects.create(
-            post=cls.post,
-            text='Тестовый комм',
-            author=cls.user,
-        )
-        cls.form = PostForm()
 
     @classmethod
     def tearDownClass(cls):
@@ -62,9 +56,12 @@ class PostCasheFormTests(TestCase):
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        cache.clear()
 
     def test_delete_cache_post(self):
         response = self.authorized_client.get('/')
-        post = response.content
-        self.assertEqual(post.title, post.title)
+        post = Post.objects.create(author=self.user)
+        self.assertNotIn(post, response.context['page_obj'])
+        cache.clear()
+        response = self.authorized_client.get('/')
+        self.assertIn(post, response.context['page_obj'])
+

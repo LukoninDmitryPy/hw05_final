@@ -66,7 +66,7 @@ class PostCreateFormTests(TestCase):
         self.follower = User.objects.create_user(username='follower')
         cache.clear()
 
-    def test_auth_follow_and_unfollow(self):
+    def test_auth_follow(self):
         self.authorized_client.post(reverse(
             'posts:profile_follow', kwargs={'username': self.follower}
         ))
@@ -76,6 +76,11 @@ class PostCreateFormTests(TestCase):
             ).exists(),
             True
         )
+
+    def test_auth_unfollow(self):
+        self.authorized_client.post(reverse(
+            'posts:profile_follow', kwargs={'username': self.follower}
+        ))
         self.authorized_client.post(reverse(
             'posts:profile_unfollow', kwargs={'username': self.follower}
         ))
@@ -86,20 +91,19 @@ class PostCreateFormTests(TestCase):
             False
         )
 
-    def test_new_post_in_favourites(self):
+    def test_new_post_in_favourites_auth(self):
         Follow.objects.create(user=self.user, author=self.follower)
         post = Post.objects.create(author=self.follower)
         response = self.authorized_client.get(reverse('posts:follow_index'))
         self.assertIn(post, response.context['page_obj'])
-
-        self.authorized_client.logout()
-
+    
+    def test_new_post_in_favourites_guest(self):
+        Follow.objects.create(user=self.user, author=self.follower)
+        post = Post.objects.create(author=self.follower)
         User.objects.create_user(
             username='username',
             password='password'
         )
-
         self.client.login(username='username', password='password')
-
         response = self.client.get(reverse('posts:follow_index'))
         self.assertNotIn(post, response.context['page_obj'])

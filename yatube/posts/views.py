@@ -21,7 +21,7 @@ def get_page_context(queryset, request):
     }
 
 
-@cache_page(20 * 1)
+@cache_page(20 * 20)
 def index(request):
     context = get_page_context(Post.objects.all(), request)
     return render(request, 'posts/index.html', context)

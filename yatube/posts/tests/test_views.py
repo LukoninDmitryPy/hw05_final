@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -139,13 +140,13 @@ class PaginatorViewsTest(TestCase):
         )
 
     def setUp(self):
-        a = 13
-        for b in range(a):
-            self.post = Post.objects.create(
-                text='Тестовый текст %s' % b,
+        self.post = Post.objects.bulk_create([
+            Post(
+                text="Тестовый текст %i",
                 author=self.user,
-                group=self.group,
-            )
+                group=self.group
+            ) for i in range(13)
+        ])
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         cache.clear()
@@ -153,39 +154,39 @@ class PaginatorViewsTest(TestCase):
     def test_first_index_contains_ten_records(self):
         response = self.authorized_client.get(reverse('posts:index'))
         # Проверка: количество постов на первой странице равно 10.
-        self.assertEqual(len(response.context['page_obj']), 10)
+        self.assertEqual(len(response.context['page_obj']), settings.TEN)
 
     def test_second_index_contains_three_records(self):
         # Проверка: на второй странице должно быть три поста.
         response = self.authorized_client.get(
             reverse('posts:index') + '?page=2'
         )
-        self.assertEqual(len(response.context['page_obj']), 3)
+        self.assertEqual(len(response.context['page_obj']), settings.THREE)
 
     def test_first_group_contains_ten_records(self):
         response = self.authorized_client.get(
             reverse('posts:group_list', kwargs={'slug': self.group.slug})
         )
         # Проверка: количество постов на первой странице равно 10.
-        self.assertEqual(len(response.context['page_obj']), 10)
+        self.assertEqual(len(response.context['page_obj']), settings.TEN)
 
     def test_second_group_contains_three_records(self):
         # Проверка: на второй странице должно быть три поста.
         response = self.authorized_client.get(reverse(
             'posts:group_list', kwargs={'slug': self.group.slug}
         ) + '?page=2')
-        self.assertEqual(len(response.context['page_obj']), 3)
+        self.assertEqual(len(response.context['page_obj']), settings.THREE)
 
     def test_first_profile_contains_ten_records(self):
         response = self.authorized_client.get(reverse(
             'posts:profile', kwargs={'username': self.user}
         ))
         # Проверка: количество постов на первой странице равно 10.
-        self.assertEqual(len(response.context['page_obj']), 10)
+        self.assertEqual(len(response.context['page_obj']), settings.TEN)
 
     def test_second_profile_contains_three_records(self):
         # Проверка: на второй странице должно быть три поста.
         response = self.authorized_client.get(reverse(
             'posts:profile', kwargs={'username': self.user}
         ) + '?page=2')
-        self.assertEqual(len(response.context['page_obj']), 3)
+        self.assertEqual(len(response.context['page_obj']), settings.THREE)
