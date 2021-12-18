@@ -67,7 +67,6 @@ class PostCreateFormTests(TestCase):
         cache.clear()
 
     def test_auth_follow_and_unfollow(self):
-
         self.authorized_client.post(reverse(
             'posts:profile_follow', kwargs={'username': self.follower}
         ))
