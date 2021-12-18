@@ -170,7 +170,7 @@ class PostCreateFormTests(TestCase):
                 text=form_data['text'],
             ).exists()
         )
-    
+
     def test_create_comment_by_client(self):
         comments_count = Comment.objects.count()
         form_data = {
@@ -182,7 +182,9 @@ class PostCreateFormTests(TestCase):
             follow=True
         )
         authorized_url = reverse('users:login')
-        create_url = reverse('posts:add_comment', kwargs={'post_id': self.post.id})
+        create_url = reverse(
+            'posts:add_comment', kwargs={'post_id': self.post.id}
+        )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertRedirects(response, f'{authorized_url}?next={create_url}')
         self.assertEqual(Comment.objects.count(), comments_count)

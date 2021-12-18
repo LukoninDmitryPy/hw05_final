@@ -96,7 +96,7 @@ class PostCreateFormTests(TestCase):
         post = Post.objects.create(author=self.follower)
         response = self.authorized_client.get(reverse('posts:follow_index'))
         self.assertIn(post, response.context['page_obj'])
-    
+
     def test_new_post_in_favourites_guest(self):
         Follow.objects.create(user=self.user, author=self.follower)
         post = Post.objects.create(author=self.follower)
