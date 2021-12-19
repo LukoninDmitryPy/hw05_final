@@ -58,6 +58,7 @@ class StaticURLTests(TestCase):
             with self.subTest(adress=adress):
                 response = self.guest_client.get(adress)
                 self.assertTemplateUsed(response, template)
+
     # дополнил follow :)
     def test_urls_owner_uses_correct_template(self):
         templates_url_names = {
