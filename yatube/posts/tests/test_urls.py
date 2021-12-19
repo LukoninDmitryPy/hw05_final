@@ -50,19 +50,20 @@ class StaticURLTests(TestCase):
     def test_urls_guest_uses_correct_template(self):
         templates_url_names = {
             'posts/index.html': '/',
-            'posts/group_list.html': '/group/test-slug/',
-            'posts/profile.html': '/profile/auth/',
+            'posts/group_list.html': f'/group/{self.group.slug}/',
+            'posts/profile.html': f'/profile/{self.user}/',
             'posts/post_detail.html': f'/posts/{self.post.id}/',
         }
         for template, adress in templates_url_names.items():
             with self.subTest(adress=adress):
                 response = self.guest_client.get(adress)
                 self.assertTemplateUsed(response, template)
-
+    # дополнил follow :)
     def test_urls_owner_uses_correct_template(self):
         templates_url_names = {
             f'/posts/{self.post.id}/edit/': 'posts/create_post.html',
             '/create/': 'posts/create_post.html',
+            '/follow/': 'posts/follow.html',
         }
         for adress, template in templates_url_names.items():
             with self.subTest(adress=adress):

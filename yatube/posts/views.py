@@ -54,16 +54,16 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     form = CommentForm()
-    post_id = get_object_or_404(Post, pk=post_id)
-    author = post_id.author
+    post = get_object_or_404(Post, pk=post_id)
+    author = post.author
     posts_count = author.posts.count()
-    comments = post_id.comments.all()
+    comments = post.comments.all()
     following = (
         request.user.is_authenticated
-        and post_id.author.following.filter(user=request.user).exists()
+        and post.author.following.filter(user=request.user).exists()
     )
     context = {
-        'post_id': post_id,
+        'post_id': post,
         'posts_count': posts_count,
         'form': form,
         'comments': comments,
@@ -83,6 +83,7 @@ def post_create(request):
     return render(request, 'posts/create_post.html', {'form': form})
 
 
+@login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if post.author != request.user:

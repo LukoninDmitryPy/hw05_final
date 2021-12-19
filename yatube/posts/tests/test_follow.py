@@ -52,7 +52,6 @@ class PostCreateFormTests(TestCase):
             text='Тестовый комм',
             author=cls.user,
         )
-        cls.form = PostForm()
 
     @classmethod
     def tearDownClass(cls):
@@ -64,9 +63,9 @@ class PostCreateFormTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.follower = User.objects.create_user(username='follower')
-        cache.clear()
 
     def test_auth_follow(self):
+        follow_count = Follow.objects.count()
         self.authorized_client.post(reverse(
             'posts:profile_follow', kwargs={'username': self.follower}
         ))
@@ -76,11 +75,10 @@ class PostCreateFormTests(TestCase):
             ).exists(),
             True
         )
+        self.assertEqual(Follow.objects.count(), follow_count + 1)
 
     def test_auth_unfollow(self):
-        self.authorized_client.post(reverse(
-            'posts:profile_follow', kwargs={'username': self.follower}
-        ))
+        Follow.objects.create(user=self.user, author=self.follower)
         self.authorized_client.post(reverse(
             'posts:profile_unfollow', kwargs={'username': self.follower}
         ))
@@ -98,7 +96,6 @@ class PostCreateFormTests(TestCase):
         self.assertIn(post, response.context['page_obj'])
 
     def test_new_post_in_favourites_guest(self):
-        Follow.objects.create(user=self.user, author=self.follower)
         post = Post.objects.create(author=self.follower)
         User.objects.create_user(
             username='username',
