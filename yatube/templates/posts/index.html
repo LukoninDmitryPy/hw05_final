@@ -3,13 +3,13 @@
         {% block title %}Последние обновления на сайте{% endblock %}
         {% load cache %}
         {% block content %}
-        {% cache 20 index_page %}
+        {% cache 0 index_page %}
         <div class="container py-5">
           {% include 'posts/includes/switcher.html' %}
           {% for post in page_obj %}
           {% include 'posts/includes/post_list.html' %}
             {% if post.group %}   
-              <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+            <li class="d-flex justify-content-between"><a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a></li>
             {% endif %}
             {% if not forloop.last %}<hr>{% endif %}
           {% endfor %}
